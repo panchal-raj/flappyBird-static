@@ -4,7 +4,7 @@ import { gameState, sounds, gameSettings, updateLivesDisplay } from '../gameStat
 // Reset bird position after collision
 function resetBirdPosition() {
     // Reset bird position but keep the game running
-    gameState.bird.y = window.innerHeight / 3;
+    // gameState.bird.y = window.innerHeight / 3;
     gameState.bird.velocity = 0;
     
     // Give player a brief invulnerability period
@@ -13,6 +13,7 @@ function resetBirdPosition() {
         gameState.invulnerable = false;
     }, 1500); // 1.5 seconds of invulnerability
 }
+
 
 // Handle life loss
 function loseLife(gameOverCallback) {
@@ -36,11 +37,8 @@ function loseLife(gameOverCallback) {
 // Check for collisions
 function checkCollisions(gameOverCallback) {
     const bird = gameState.bird;
-
-    // Skip collision check during invulnerability
-    if (gameState.invulnerable) return;
     
-    // Ground collision - prevent bird from going below ground instead of losing a life
+    // Ground collision - prevent bird from going below ground
     if (bird.y + bird.height >= gameState.ground.y) {
         bird.y = gameState.ground.y - bird.height;
         bird.velocity = 0;
@@ -51,7 +49,12 @@ function checkCollisions(gameOverCallback) {
         bird.y = 0;
         bird.velocity = 0;
     }
-    
+
+    // Skip OBSTACLE collision check during invulnerability
+    if (gameState.invulnerable) {
+        return;
+    }
+
     // Only check pipe collisions in pipe-related game modes
     if (gameSettings.mode === 'pipes' || gameSettings.mode === 'pipes-and-stars') { //
         // Pipe collisions
