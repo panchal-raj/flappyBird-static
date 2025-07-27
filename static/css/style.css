@@ -1,0 +1,386 @@
+/* ===================================================================
+   Flappy Bird Clone - Stylesheet
+   =================================================================== */
+
+/* ===================================================================
+   1. General & Body Styles
+   =================================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Ensures padding and border are included in the element's total width and height */
+    font-family: Arial, sans-serif;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden; /* Prevents scrollbars on the main document */
+}
+
+body {
+    background-color: #70c5ce; /* Default background color */
+    overflow: hidden; /* Double-ensure no scrolling */
+    position: fixed; /* Prevents pull-to-refresh and other mobile browser gestures */
+}
+
+/* ===================================================================
+   2. Game Container & Canvas
+   =================================================================== */
+
+.game-container {
+    width: 100vw; /* Use 100% of the viewport width */
+    height: 100vh; /* Use 100% of the viewport height */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+#game-screen {
+    position: relative;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+    max-width: none; /* Override the max-width from the .screen class */
+    overflow: hidden;
+    z-index: 5; /* Game screen is below menus (z-index 10) */
+}
+
+#game-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain; /* Crucial for scaling the canvas without distortion on different aspect ratios */
+}
+
+/* ===================================================================
+   3. Screens & Menus (Main Menu, Pause, Game Over)
+   =================================================================== */
+
+.screen {
+    width: 90%; /* Use percentage for better responsiveness */
+    max-width: 500px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    display: none; /* Screens are hidden by default */
+    text-align: center;
+    z-index: 10; /* Menus should be on top of the game screen */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the screen perfectly */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.screen.active {
+    display: block; /* The .active class (or direct style) will show the screen */
+}
+
+h1, h2, h3 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.player-info {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+/* Settings within menus (difficulty, input, etc.) */
+.settings {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.setting-group {
+    margin-bottom: 10px;
+}
+
+.option-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.option-buttons button {
+    background-color: #ddd;
+    color: #333;
+    flex: 1 0 auto;
+    min-width: 80px;
+}
+
+.option-buttons button.selected {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* ===================================================================
+   4. In-Game UI (Score, Lives, Pause Button)
+   =================================================================== */
+
+#score-display {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    background-color: transparent;
+    z-index: 6; /* Above game canvas but below menus */
+}
+
+#pause-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 11; /* Above menus to be clickable even if a menu is briefly shown */
+    padding: 8px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#pause-btn:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+#lives-display {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    z-index: 6; /* Same level as score */
+}
+
+#lives-count {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+#heart-icon {
+    width: 32px;
+    height: 32px;
+    display: block;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+/* ===================================================================
+   5. Calibration & Webcam Styles
+   =================================================================== */
+
+#webcam-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Hidden behind everything by default */
+}
+
+#webcam {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1); /* Mirror image for intuitive control */
+}
+
+#calibration-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+    display: none; /* Hidden by default, shown via JS */
+    align-items: center;
+    justify-content: center;
+    z-index: 100; /* High z-index to be on top of the game canvas */
+}
+
+.calibration-instructions {
+    color: yellow;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    width: 90%;
+}
+
+.calibration-instructions p {
+    margin-bottom: 80px;
+}
+
+.smile-value-display {
+    position: absolute;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: red;
+    font-size: 38px;
+    font-weight: bold;
+    z-index: 103; /* Above all other calibration elements */
+}
+
+#exit-calibration-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px 15px;
+    z-index: 102; /* Above the overlay */
+}
+
+/* ===================================================================
+   6. Animations & Effects
+   =================================================================== */
+
+/* Bird flapping animation */
+@keyframes flap {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
+}
+
+/* Invulnerability flashing effect */
+@keyframes flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.flashing {
+    animation: flash 0.5s infinite;
+}
+
+/* Score increase animation */
+@keyframes scoreUp {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.5); }
+    100% { transform: scale(1); }
+}
+
+.score-animation {
+    animation: scoreUp 0.5s ease-out;
+}
+
+/* Loading spinner animation */
+.loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #4CAF50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+/* ===================================================================
+   7. Responsive Design (Media Queries)
+   =================================================================== */
+
+/* Tablets and smaller laptops */
+@media (max-width: 768px) {
+    .screen {
+        width: 95%;
+        padding: 15px;
+    }
+
+    #pause-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    #lives-count {
+        font-size: 20px;
+    }
+
+    #heart-icon {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+/* Mobile devices in landscape orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+    #score-display {
+        font-size: 28px;
+        top: 10px;
+    }
+
+    #lives-display, #pause-btn {
+        top: 10px;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5em; /* Reduce heading size on very small screens */
+    }
+
+    button {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+}
