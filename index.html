@@ -3,11 +3,11 @@
 <head>
     <title>Flappy Bird - Smile Edition</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <link rel="preload" href="static/assets/sprites/yellowbird-upflap.png" as="image">
-    <link rel="preload" href="static/assets/sprites/background-day.png" as="image">
+    <link rel="preload" href="/static/assets/sprites/yellowbird-upflap.png" as="image">
+    <link rel="preload" href="/static/assets/sprites/background-day.png" as="image">
 </head>
 <body>
     <div id="game-container" class="game-container">
@@ -35,15 +35,15 @@
                         <button class="mode-btn" data-mode="stars" >Stars</button>
                         <button class="mode-btn" data-mode="balloons" disabled>Balloons</button>
                         <button class="mode-btn" data-mode="pipes-and-stars" >Pipes & Stars</button>
-                        <button class="mode-btn" data-mode="all" disabled>All Modes</button>
+                        <!-- <button class="mode-btn" data-mode="all" disabled>All Modes</button> -->
                     </div>
                 </div>
                 
                 <div class="setting-group">
                     <h3>Difficulty</h3>
                     <div class="option-buttons" id="difficulty-buttons">
-                        <button class="difficulty-btn" data-difficulty="easy">Easy</button>
-                        <button class="difficulty-btn selected" data-difficulty="normal">Normal</button>
+                        <button class="difficulty-btn selected" data-difficulty="easy">Easy</button>
+                        <button class="difficulty-btn" data-difficulty="normal">Normal</button>
                         <button class="difficulty-btn" data-difficulty="hard">Hard</button>
                         <button class="difficulty-btn" data-difficulty="arcade">Arcade</button>
                     </div>
@@ -54,7 +54,7 @@
                     <div class="option-buttons" id="input-buttons">
                         <button class="input-btn selected" data-input="space">Space</button>
                         <button class="input-btn" data-input="smile">Smile</button>
-                        <button class="input-btn" data-input="altitude">Altitude</button>
+                        <!-- <button class="input-btn" data-input="altitude">Altitude</button> -->
                     </div>
                 </div>
                 <div id="controls-container">
@@ -69,7 +69,7 @@
             </div>
             <div id="lives-display">
                 <span id="lives-count">3/3</span>
-                <img id="heart-icon" src="static/assets/sprites/heart.png" alt="Lives">
+                <img id="heart-icon" src="{{ url_for('static', filename='assets/sprites/heart.png') }}" alt="Lives">
             </div>
             <button id="pause-btn">⏸️</button>
         </div>
@@ -106,16 +106,16 @@
         <video id="webcam" autoplay playsinline muted></video>
     </div>
 
-    <script type="module" src="static/js/utils/input.js"></script>
-    <script type="module" src="static/js/utils/collisions.js"></script>
-    <script type="module" src="static/js/utils/rendering.js"></script>
+    <script type="module" src="{{ url_for('static', filename='js/utils/input.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/utils/collisions.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/utils/rendering.js') }}"></script>
     
-    <script type="module" src="static/js/gameState.js"></script>
-    <script type="module" src="static/js/smileDetector.js"></script>
-    <script type="module" src="static/js/calibration.js"></script>
-    <script type="module" src="static/js/webcam.js"></script>
-    <script type="module" src="static/js/modes/pipes.js"></script>
-    <script type="module" src="static/js/game.js"></script>
+    <script type="module" src="{{ url_for('static', filename='js/gameState.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/smileDetector.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/calibration.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/webcam.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/modes/pipes.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/game.js') }}"></script>
     
     <script>
         // This script handles initialization and buttons before modules are fully loaded
@@ -138,7 +138,6 @@
                 button.addEventListener('click', function() {
                     modeButtons.forEach(btn => btn.classList.remove('selected'));
                     this.classList.add('selected');
-                    localStorage.setItem('flappyGameMode', this.dataset.mode);
                 });
             });
             
@@ -148,7 +147,6 @@
                 button.addEventListener('click', function() {
                     difficultyButtons.forEach(btn => btn.classList.remove('selected'));
                     this.classList.add('selected');
-                    localStorage.setItem('flappyDifficulty', this.dataset.difficulty);
                 });
             });
             
@@ -158,7 +156,6 @@
                 button.addEventListener('click', function() {
                     inputButtons.forEach(btn => btn.classList.remove('selected'));
                     this.classList.add('selected');
-                    localStorage.setItem('flappyInputMethod', this.dataset.input);
                     updateControlsInfo(this.dataset.input);
                 });
             });
@@ -173,51 +170,16 @@
             });
             
             // Load settings from localStorage
-            function loadSavedSettings() {
+            function loadDefaultSettings() {
                 // Load player name
                 const savedName = localStorage.getItem('flappyPlayerName');
                 if (savedName) {
                     document.getElementById('player-name').textContent = savedName;
                 }
                 
-                // Load game mode
-                const savedMode = localStorage.getItem('flappyGameMode');
-                if (savedMode) {
-                    modeButtons.forEach(btn => {
-                        if (btn.dataset.mode === savedMode) {
-                            btn.classList.add('selected');
-                        } else {
-                            btn.classList.remove('selected');
-                        }
-                    });
-                }
-                
-                // Load difficulty
-                const savedDifficulty = localStorage.getItem('flappyDifficulty');
-                if (savedDifficulty) {
-                    difficultyButtons.forEach(btn => {
-                        if (btn.dataset.difficulty === savedDifficulty) {
-                            btn.classList.add('selected');
-                        } else {
-                            btn.classList.remove('selected');
-                        }
-                    });
-                }
-                
-                // Load input method
-                const savedInput = localStorage.getItem('flappyInputMethod');
-                if (savedInput) {
-                    inputButtons.forEach(btn => {
-                        if (btn.dataset.input === savedInput) {
-                            btn.classList.add('selected');
-                        } else {
-                            btn.classList.remove('selected');
-                        }
-                    });
-                    updateControlsInfo(savedInput);
-                } else {
-                    updateControlsInfo('space');
-                }
+                // Game settings are now defaulted in the HTML and are not persistent.
+                // We just need to update the controls info text to match the default input.
+                updateControlsInfo('space');
             }
             
             // Update controls info based on input method
@@ -254,8 +216,8 @@
                 controlsContainer.innerHTML = controlsHtml;
             }
             
-            // Load saved settings
-            loadSavedSettings();
+            // Load default settings
+            loadDefaultSettings();
         });
     </script>
     <script>
